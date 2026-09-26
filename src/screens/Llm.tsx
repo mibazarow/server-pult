@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 
 import Card from "../components/Card";
+import Confirm from "../components/Confirm";
 import {
   llmList,
   llmStart,
@@ -30,6 +31,9 @@ export default function Llm() {
   const [status, setStatus] = useState<LlmStatus | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const [pending, setPending] = useState<{ title: string; action: () => void } | null>(
+    null,
+  );
 
   const refresh = useCallback(async () => {
     try {
@@ -48,14 +52,7 @@ export default function Llm() {
     return () => clearInterval(id);
   }, [refresh]);
 
-  async function switchTo(m: ModelInfo) {
-    if (status?.running && status.model === m.id) return;
-    const ok = confirm(
-      status?.running
-        ? `Выгрузить «${status.model}» и загрузить «${m.id}»?`
-        : `Загрузить «${m.id}»?`,
-    );
-    if (!ok) return;
+  async function doStart(m: ModelInfo) {
     setBusy(m.id);
     setErr(null);
     try {
@@ -68,8 +65,7 @@ export default function Llm() {
     }
   }
 
-  async function stop() {
-    if (!confirm("Остановить загруженную модель?")) return;
+  async function doStop() {
     setBusy("__stop");
     setErr(null);
     try {
@@ -82,6 +78,18 @@ export default function Llm() {
     }
   }
 
+  function switchTo(m: ModelInfo) {
+    if (status?.running && status.model === m.id) return;
+    const title = status?.running
+      ? `Выгрузить «${status.model}» и загрузить «${m.id}»?`
+      : `Загрузить «${m.id}»?`;
+    setPending({ title, action: () => doStart(m) });
+  }
+
+  function stop() {
+    setPending({ title: "Остановить загруженную модель?", action: doStop });
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
@@ -91,7 +99,7 @@ export default function Llm() {
           onClick={stop}
           disabled={!status?.running || busy !== null}
         >
-          Остановить
+          {busy === "__stop" ? "Останавливаю…" : "Остановить"}
         </button>
       </div>
 
@@ -164,6 +172,18 @@ export default function Llm() {
           </Card>
         </div>
       </div>
+
+      <Confirm
+        open={pending !== null}
+        title={pending?.title ?? ""}
+        okText="Да"
+        onOk={() => {
+          const a = pending?.action;
+          setPending(null);
+          a?.();
+        }}
+        onCancel={() => setPending(null)}
+      />
     </div>
   );
 }

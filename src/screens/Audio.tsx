@@ -41,10 +41,12 @@ function MusicForm({ ctl }: { ctl: JobCtl }) {
   const [steps, setSteps] = useState(8);
   const [guidance, setGuidance] = useState(7.0);
   const [starting, setStarting] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
 
   async function go() {
     if (!caption.trim()) return;
     setStarting(true);
+    setErr(null);
     try {
       const r = await runMusic({
         caption,
@@ -55,7 +57,7 @@ function MusicForm({ ctl }: { ctl: JobCtl }) {
       });
       ctl.start(r.job_id);
     } catch (e) {
-      alert(String(e));
+      setErr(String(e));
     } finally {
       setStarting(false);
     }
@@ -85,6 +87,7 @@ function MusicForm({ ctl }: { ctl: JobCtl }) {
           {ctl.busy ? "Генерация…" : "Сгенерировать музыку"}
         </button>
       </div>
+      {err && <div className="mt-3 text-sm text-red-600">✗ {err}</div>}
     </div>
   );
 }
@@ -96,15 +99,17 @@ function SfxForm({ ctl }: { ctl: JobCtl }) {
   const [cfg, setCfg] = useState(4.0);
   const [seed, setSeed] = useState(0);
   const [starting, setStarting] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
 
   async function go() {
     if (!prompt.trim()) return;
     setStarting(true);
+    setErr(null);
     try {
       const r = await runSfx({ prompt, seconds, steps, cfg, seed });
       ctl.start(r.job_id);
     } catch (e) {
-      alert(String(e));
+      setErr(String(e));
     } finally {
       setStarting(false);
     }
@@ -129,6 +134,7 @@ function SfxForm({ ctl }: { ctl: JobCtl }) {
           {ctl.busy ? "Генерация…" : "Сгенерировать звук"}
         </button>
       </div>
+      {err && <div className="mt-3 text-sm text-red-600">✗ {err}</div>}
       <div className="mt-2 text-xs text-neutral-400">
         MOSS-SoundEffect (Apache-2.0), 48 кГц mono. Генерация может занять несколько минут.
       </div>

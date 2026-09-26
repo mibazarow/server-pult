@@ -64,11 +64,13 @@ export default function Images() {
   const [cfg, setCfg] = useState(4.0);
   const [upscale, setUpscale] = useState(false);
   const [starting, setStarting] = useState(false);
+  const [startErr, setStartErr] = useState<string | null>(null);
   const { job, saved, error, busy, start, cancel } = useGlobalJob();
 
   async function generate() {
     if (!prompt.trim()) return;
     setStarting(true);
+    setStartErr(null);
     try {
       const s = FLAT.find((x) => x.label === sizeLabel) ?? FLAT[4];
       const r = await runImage({
@@ -82,7 +84,7 @@ export default function Images() {
       });
       start(r.job_id);
     } catch (e) {
-      alert(String(e));
+      setStartErr(String(e));
     } finally {
       setStarting(false);
     }
@@ -179,6 +181,8 @@ export default function Images() {
           {busy ? "Генерация…" : "Генерировать"}
         </button>
       </div>
+
+      {startErr && <div className="mt-3 text-sm text-red-600">✗ {startErr}</div>}
 
       <JobPanel job={job} saved={saved} error={error} busy={busy} onCancel={cancel} />
     </div>
