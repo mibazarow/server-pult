@@ -40,6 +40,25 @@ ServerPult собирает всё это в одно окно: список м�
 
 ---
 
+## Скриншоты
+
+<table>
+  <tr>
+    <td width="50%"><img src="SCREENS/01-dashboard.png" alt="Дашборд" width="100%"><br><sub><b>Дашборд</b> — GPU, CPU, RAM, диск и кто сейчас занимает видеокарту</sub></td>
+    <td width="50%"><img src="SCREENS/02-llm.png" alt="LLM" width="100%"><br><sub><b>LLM</b> — список моделей и переключение в один клик</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="SCREENS/03-chat.png" alt="Чат" width="100%"><br><sub><b>Чат</b> — потоковый диалог с загруженной моделью</sub></td>
+    <td width="50%"><img src="SCREENS/04-images.png" alt="Картинки" width="100%"><br><sub><b>Картинки</b> — промты, размеры, шаги/CFG и SUPIR ×2</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="SCREENS/05-audio.png" alt="Аудио" width="100%"><br><sub><b>Аудио</b> — музыка (ACE-Step) и звуки (MOSS-SoundEffect)</sub></td>
+    <td width="50%"><img src="SCREENS/06-settings.png" alt="Настройки" width="100%"><br><sub><b>Настройки</b> — профиль сервера и ключ API (секреты в Keychain)</sub></td>
+  </tr>
+</table>
+
+---
+
 ## Как это устроено
 
 ServerPult — тонкий клиент. Вся тяжёлая работа — на сервере, приложение только вызывает
