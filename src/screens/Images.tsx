@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 
 import JobPanel from "../components/JobPanel";
-import { useJob } from "../hooks/useJob";
+import { useGlobalJob } from "../state/job";
 import { runImage } from "../lib/api";
 
 const DEFAULT_POSITIVE =
@@ -64,7 +64,7 @@ export default function Images() {
   const [cfg, setCfg] = useState(4.0);
   const [upscale, setUpscale] = useState(false);
   const [starting, setStarting] = useState(false);
-  const { job, saved, error, busy, start, cancel } = useJob();
+  const { job, saved, error, busy, start, cancel } = useGlobalJob();
 
   async function generate() {
     if (!prompt.trim()) return;

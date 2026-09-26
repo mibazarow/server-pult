@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Card from "../components/Card";
 import { llmStatus, systemStatus, type LlmStatus, type SystemStatus } from "../lib/api";
 import { fmtDuration, fmtMib, fmtNum } from "../lib/format";
+import { useGlobalJob } from "../state/job";
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
@@ -17,6 +18,7 @@ export default function Dashboard() {
   const [sys, setSys] = useState<SystemStatus | null>(null);
   const [llm, setLlm] = useState<LlmStatus | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const activeJob = useGlobalJob();
 
   useEffect(() => {
     let alive = true;
@@ -124,6 +126,36 @@ export default function Dashboard() {
             <div className="text-sm text-neutral-500">Модель не загружена.</div>
           )}
         </Card>
+
+        {activeJob.job && (
+          <Card
+            title="Задание"
+            right={
+              <span className="text-xs rounded-full bg-sky-100 text-sky-700 px-2 py-0.5">
+                {activeJob.job.kind} · {activeJob.job.state}
+              </span>
+            }
+          >
+            <Stat label="Стадия" value={activeJob.job.stage} />
+            <div className="mt-1 text-sm text-neutral-700">{activeJob.job.message}</div>
+            {activeJob.saved && (
+              <div className="mt-2 text-xs text-emerald-700 break-all">
+                ✓ {activeJob.saved.path}
+              </div>
+            )}
+            {activeJob.error && (
+              <div className="mt-2 text-xs text-red-600">✗ {activeJob.error}</div>
+            )}
+            {activeJob.busy && (
+              <button
+                className="mt-3 rounded-md border border-neutral-300 px-3 py-1 text-sm hover:bg-neutral-100"
+                onClick={activeJob.cancel}
+              >
+                Отменить
+              </button>
+            )}
+          </Card>
+        )}
       </div>
     </div>
   );

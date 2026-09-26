@@ -1,12 +1,12 @@
 import { useState, type ReactNode } from "react";
 
 import JobPanel from "../components/JobPanel";
-import { useJob } from "../hooks/useJob";
+import { useGlobalJob, type JobCtl } from "../state/job";
 import { runMusic, runSfx } from "../lib/api";
 
 export default function Audio() {
   const [tab, setTab] = useState<"music" | "sfx">("music");
-  const jobCtl = useJob();
+  const jobCtl = useGlobalJob();
 
   return (
     <div className="max-w-2xl">
@@ -34,7 +34,7 @@ export default function Audio() {
   );
 }
 
-function MusicForm({ ctl }: { ctl: ReturnType<typeof useJob> }) {
+function MusicForm({ ctl }: { ctl: JobCtl }) {
   const [caption, setCaption] = useState("");
   const [lyrics, setLyrics] = useState("");
   const [duration, setDuration] = useState(60);
@@ -89,7 +89,7 @@ function MusicForm({ ctl }: { ctl: ReturnType<typeof useJob> }) {
   );
 }
 
-function SfxForm({ ctl }: { ctl: ReturnType<typeof useJob> }) {
+function SfxForm({ ctl }: { ctl: JobCtl }) {
   const [prompt, setPrompt] = useState("");
   const [seconds, setSeconds] = useState(5);
   const [steps, setSteps] = useState(100);

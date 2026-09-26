@@ -7,6 +7,7 @@ import Images from "./screens/Images";
 import Audio from "./screens/Audio";
 import Logs from "./screens/Logs";
 import Settings from "./screens/Settings";
+import { JobProvider } from "./state/job";
 
 const NAV: { id: string; label: string }[] = [
   { id: "dashboard", label: "Дашборд" },
@@ -22,8 +23,9 @@ export default function App() {
   const [screen, setScreen] = useState("settings");
 
   return (
-    <div className="flex h-full">
-      <aside className="w-52 shrink-0 border-r border-neutral-200 bg-neutral-50 flex flex-col">
+    <JobProvider>
+      <div className="flex h-full">
+        <aside className="w-52 shrink-0 border-r border-neutral-200 bg-neutral-50 flex flex-col">
         <div className="px-4 py-4 text-lg font-semibold tracking-tight text-neutral-900">
           ServerPult
         </div>
@@ -54,7 +56,8 @@ export default function App() {
         {screen === "images" && <Images />}
         {screen === "audio" && <Audio />}
         {screen === "logs" && <Logs />}
-      </main>
-    </div>
+        </main>
+      </div>
+    </JobProvider>
   );
 }
