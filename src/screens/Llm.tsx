@@ -56,7 +56,8 @@ export default function Llm() {
     setBusy(m.id);
     setErr(null);
     try {
-      await llmStart(m.id);
+      const r = await llmStart(m.id);
+      if (!r.ok) setErr(`Не удалось загрузить «${m.id}» (сервер вернул ошибку).`);
       await refresh();
     } catch (e) {
       setErr(String(e));
@@ -69,7 +70,8 @@ export default function Llm() {
     setBusy("__stop");
     setErr(null);
     try {
-      await llmStop();
+      const r = await llmStop();
+      if (!r.ok) setErr("Не удалось остановить модель (сервер вернул ошибку).");
       await refresh();
     } catch (e) {
       setErr(String(e));
