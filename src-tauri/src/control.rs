@@ -121,7 +121,7 @@ pub async fn run_sfx(
     let cmd = format!(
         "bash /opt/kilo-tools/control/audio.sh sfx {} {} {} {} {}",
         shq(&pb),
-        seconds.unwrap_or(5.0),
+        seconds.unwrap_or(5.0).clamp(1.0, 30.0),
         steps.unwrap_or(100),
         cfg.unwrap_or(4.0),
         seed.unwrap_or(0)

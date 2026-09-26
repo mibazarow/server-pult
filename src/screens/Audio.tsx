@@ -124,7 +124,7 @@ function SfxForm({ ctl }: { ctl: JobCtl }) {
         placeholder="clash of two swords, metal impact, sharp"
       />
       <div className="flex gap-3 flex-wrap items-end">
-        <NumField label="Длительность, с" value={seconds} onChange={setSeconds} />
+        <NumField label="Длительность, с" value={seconds} onChange={setSeconds} min={1} max={30} />
         <NumField label="Steps" value={steps} onChange={setSteps} />
         <NumField label="CFG" value={cfg} onChange={setCfg} step={0.1} />
         <NumField label="Seed" value={seed} onChange={setSeed} />
@@ -147,11 +147,15 @@ function NumField({
   value,
   onChange,
   step = 1,
+  min,
+  max,
 }: {
   label: string;
   value: number;
   onChange: (v: number) => void;
   step?: number;
+  min?: number;
+  max?: number;
 }) {
   return (
     <label className="block w-36">
@@ -160,8 +164,15 @@ function NumField({
         className={input}
         type="number"
         step={step}
+        min={min}
+        max={max}
         value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
+        onChange={(e) => {
+          let v = Number(e.target.value);
+          if (min !== undefined) v = Math.max(min, v);
+          if (max !== undefined) v = Math.min(max, v);
+          onChange(v);
+        }}
       />
     </label>
   );
