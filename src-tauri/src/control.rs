@@ -68,18 +68,20 @@ pub async fn run_image(
     steps: Option<u32>,
     cfg: Option<f32>,
     upscale: Option<bool>,
+    uncensored: Option<bool>,
 ) -> Result<serde_json::Value, String> {
     let pb = STANDARD.encode(prompt.as_bytes());
     let nb = STANDARD.encode(negative.unwrap_or_default().as_bytes());
     let cmd = format!(
-        "bash /opt/kilo-tools/control/image.sh {} {} {} {} {} {} {}",
+        "bash /opt/kilo-tools/control/image.sh {} {} {} {} {} {} {} {}",
         shq(&pb),
         shq(&nb),
         width.unwrap_or(1024),
         height.unwrap_or(1024),
         steps.unwrap_or(50),
         cfg.unwrap_or(4.0),
-        if upscale.unwrap_or(false) { 1 } else { 0 }
+        if upscale.unwrap_or(false) { 1 } else { 0 },
+        if uncensored.unwrap_or(false) { 1 } else { 0 }
     );
     let out = run(&app, &cmd).await?;
     parse(&out)

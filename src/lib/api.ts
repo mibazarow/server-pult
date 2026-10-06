@@ -86,6 +86,7 @@ export const runImage = (p: {
   steps?: number;
   cfg?: number;
   upscale?: boolean;
+  uncensored?: boolean;
 }) => invoke<{ job_id: string }>("run_image", p);
 
 export const runMusic = (p: {

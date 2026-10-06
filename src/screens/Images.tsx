@@ -63,9 +63,21 @@ export default function Images() {
   const [steps, setSteps] = useState(50);
   const [cfg, setCfg] = useState(4.0);
   const [upscale, setUpscale] = useState(false);
+  const [uncensored, setUncensored] = useState(false);
   const [starting, setStarting] = useState(false);
   const [startErr, setStartErr] = useState<string | null>(null);
   const { job, saved, error, busy, start, cancel } = useGlobalJob();
+
+  function toggleUncensored(v: boolean) {
+    setUncensored(v);
+    if (v) {
+      setSteps(8);
+      setCfg(1.0);
+    } else {
+      setSteps(50);
+      setCfg(4.0);
+    }
+  }
 
   async function generate() {
     if (!prompt.trim()) return;
@@ -81,6 +93,7 @@ export default function Images() {
         steps,
         cfg,
         upscale,
+        uncensored,
       });
       start(r.job_id);
     } catch (e) {
@@ -172,6 +185,24 @@ export default function Images() {
           <Hint>
             После генерации увеличит картинку ровно в 2 раза в обе стороны и добавит
             детали. Работает дольше и может слегка менять изображение.
+          </Hint>
+        </span>
+      </label>
+
+      <label className="flex items-start gap-2 text-sm mt-4">
+        <input
+          type="checkbox"
+          className="mt-1"
+          checked={uncensored}
+          onChange={(e) => toggleUncensored(e.target.checked)}
+        />
+        <span className={uncensored ? "text-red-700" : ""}>
+          Без цензуры (NSFW)
+          <Hint>
+            Выключает встроенную цензуру Z-Image: аблитерированный текст-энкодер +
+            NSFW-модель Z-Image-Turbo. Работает в Turbo-режиме — шаги 8, CFG 1.0;
+            негативный промт не действует (пиши всё в позитив). Только законный
+            взрослый контент.
           </Hint>
         </span>
       </label>
